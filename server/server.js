@@ -14,13 +14,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use(cors({ origin: "https://cphomesandproperties.onrender.com" }));
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
 
 app.use("/api/realtors", realtorRoutes);
 
-// Fallback for unknown API routes
 app.use("/api", (_req, res) => {
   res.status(404).json({ message: "Route not found." });
 });
