@@ -99,8 +99,8 @@ function RegisterPage({ embedded } = { embedded: false }) {
   };
 
   return (
-    <div className={embedded ? "" : "page max-w-3xl mx-auto"}>
-      <section className="mb-8 rounded-[28px] bg-white/90 p-8 shadow-2xl border border-slate-200">
+    <div className={embedded ? "" : "page max-w-3xl "}>
+      <section className="mx-0 mb-8 rounded-[28px] bg-white/90 p-8 shadow-2xl border border-slate-200">
         <p className="eyebrow">Become a partner</p>
         <h1 className="mt-3 text-3xl font-semibold text-slate-900">
           Join a high-value realtor referral network.
@@ -205,13 +205,7 @@ function RegisterPage({ embedded } = { embedded: false }) {
               autoComplete="off"
               className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
             />
-            <p className="mt-2 text-sm text-slate-500">
-              Your personal link will be{" "}
-              <strong>
-                {window.location.origin}/register/
-                {form.username.trim().toLowerCase() || "yourname"}
-              </strong>
-            </p>
+
             {errors.username && (
               <p className="mt-2 text-sm text-rose-600">{errors.username}</p>
             )}

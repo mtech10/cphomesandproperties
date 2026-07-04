@@ -5,13 +5,13 @@ function LoginPage() {
   return (
     <div className="min-h-screen bg-linear-to-br from-emerald-50 via-white to-amber-50 py-12">
       <div className="container-wide">
-        <div className="rounded-4xl bg-white/80 shadow-2xl border border-slate-200 p-10 backdrop-blur-lg">
-          <div className="flex items-center gap-4 mb-6">
+        <div className="rounded-4xl bg-white/80 shadow-2xl border border-slate-200 p-5 backdrop-blur-lg">
+          <div className="flex items-center gap-1 mb-6">
             <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-700">
               <UserPlus className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-emerald-100/90">
+              <p className="text-sm uppercase tracking-[0.24em] text-emerald-700/90">
                 Start here
               </p>
               <h1 className="mt-2 text-3xl font-semibold text-slate-900">

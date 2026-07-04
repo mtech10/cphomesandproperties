@@ -19,7 +19,7 @@ function Navbar({ searchQuery, setSearchQuery }) {
         </Link>
 
         <div className="flex flex-1 items-center justify-end gap-4">
-          {adminKey ? (
+          {adminKey && (
             <div className="flex w-full max-w-md items-center">
               <input
                 type="search"
@@ -29,8 +29,6 @@ function Navbar({ searchQuery, setSearchQuery }) {
                 className="h-10 w-full rounded-2xl border border-slate-200 bg-white/90 px-4 text-sm text-slate-700 placeholder:text-slate-400 shadow-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-200"
               />
             </div>
-          ) : (
-            <div className="text-sm text-slate-500">Private access only</div>
           )}
         </div>
       </div>
