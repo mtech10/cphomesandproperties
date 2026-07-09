@@ -11,10 +11,28 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+// Requests are only accepted from these origins. Add more (e.g. a staging
+// URL) as a comma-separated list in ALLOWED_ORIGINS if you ever need to.
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://cphomesandproperties.onrender.com",
+  ...(process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
+    : []),
+];
 
-app.use(cors({ origin: "https://cphomesandproperties.onrender.com" }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. curl, mobile apps, Postman)
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Not allowed by CORS"));
+    },
+  }),
+);
+app.use(express.json());
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });

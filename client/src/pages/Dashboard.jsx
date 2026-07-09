@@ -20,11 +20,16 @@ function Dashboard({ searchQuery }) {
         : "";
 
       return (
-        r.id.toString().toLowerCase().includes(searchTerm) ||
+        r.realtorId?.toLowerCase().includes(searchTerm) ||
         r.fullName.toLowerCase().includes(searchTerm) ||
         r.username.toLowerCase().includes(searchTerm) ||
         r.email.toLowerCase().includes(searchTerm) ||
-        r.phone.toLowerCase().includes(searchTerm) ||
+        r.mobileNumber?.toLowerCase().includes(searchTerm) ||
+        r.city?.toLowerCase().includes(searchTerm) ||
+        r.state?.toLowerCase().includes(searchTerm) ||
+        r.country?.toLowerCase().includes(searchTerm) ||
+        r.bankName?.toLowerCase().includes(searchTerm) ||
+        r.accountNumber?.toLowerCase().includes(searchTerm) ||
         r.referralCount.toString().includes(searchTerm) ||
         joined.toLowerCase().includes(searchTerm) ||
         referredBy.toLowerCase().includes(searchTerm)
@@ -108,8 +113,8 @@ function Dashboard({ searchQuery }) {
               {realtors.length} registered partners
             </h1>
             <p className="mt-4 max-w-2xl text-slate-600 leading-7">
-              Every partner, who referred them, and how many people they've
-              personally brought in.
+              Every partner's full registration details, who referred them, and
+              how many people they've personally brought in.
             </p>
           </div>
           <button
@@ -125,11 +130,20 @@ function Dashboard({ searchQuery }) {
             <table className="min-w-full text-left text-sm text-slate-700">
               <thead>
                 <tr className="border-b border-slate-200 text-xs uppercase tracking-[0.2em] text-slate-500">
-                  <th className="pb-3 pr-6">ID</th>
+                  <th className="pb-3 pr-6">Partner ID</th>
                   <th className="pb-3 pr-6">Name</th>
                   <th className="pb-3 pr-6">Username</th>
                   <th className="pb-3 pr-6">Email</th>
-                  <th className="pb-3 pr-6">Phone</th>
+                  <th className="pb-3 pr-6">Mobile</th>
+                  <th className="pb-3 pr-6">Date of birth</th>
+                  <th className="pb-3 pr-6">Gender</th>
+                  <th className="pb-3 pr-6">Address</th>
+                  <th className="pb-3 pr-6">City</th>
+                  <th className="pb-3 pr-6">State</th>
+                  <th className="pb-3 pr-6">Country</th>
+                  <th className="pb-3 pr-6">Account name</th>
+                  <th className="pb-3 pr-6">Account number</th>
+                  <th className="pb-3 pr-6">Bank</th>
                   <th className="pb-3 pr-6">Referred by</th>
                   <th className="pb-3 pr-6">Referrals</th>
                   <th className="pb-3">Joined</th>
@@ -139,7 +153,7 @@ function Dashboard({ searchQuery }) {
                 {filteredRealtors.length === 0 ? (
                   <tr>
                     <td
-                      colSpan={8}
+                      colSpan={17}
                       className="py-12 text-center text-sm text-slate-500"
                     >
                       {searchTerm
@@ -153,16 +167,43 @@ function Dashboard({ searchQuery }) {
                       key={r.id}
                       className="border-b border-slate-200 last:border-none"
                     >
-                      <td className="py-4 pr-6 break-all text-slate-600">
-                        {r.id}
+                      <td className="py-4 pr-6 font-semibold text-emerald-700 whitespace-nowrap">
+                        {r.realtorId}
                       </td>
-                      <td className="py-4 pr-6">{r.fullName}</td>
-                      <td className="py-4 pr-6 text-slate-600">
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.fullName}
+                      </td>
+                      <td className="py-4 pr-6 text-slate-600 whitespace-nowrap">
                         @{r.username}
                       </td>
-                      <td className="py-4 pr-6">{r.email}</td>
-                      <td className="py-4 pr-6">{r.phone}</td>
-                      <td className="py-4 pr-6 text-slate-600">
+                      <td className="py-4 pr-6 whitespace-nowrap">{r.email}</td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.mobileNumber}
+                      </td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.dateOfBirth
+                          ? new Date(r.dateOfBirth).toLocaleDateString()
+                          : "—"}
+                      </td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.gender}
+                      </td>
+                      <td className="py-4 pr-6">{r.address}</td>
+                      <td className="py-4 pr-6 whitespace-nowrap">{r.city}</td>
+                      <td className="py-4 pr-6 whitespace-nowrap">{r.state}</td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.country}
+                      </td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.accountName}
+                      </td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.accountNumber}
+                      </td>
+                      <td className="py-4 pr-6 whitespace-nowrap">
+                        {r.bankName}
+                      </td>
+                      <td className="py-4 pr-6 text-slate-600 whitespace-nowrap">
                         {r.referredBy
                           ? `${r.referredBy.fullName} (@${r.referredBy.username})`
                           : "— direct sign-up"}
@@ -170,7 +211,7 @@ function Dashboard({ searchQuery }) {
                       <td className="py-4 pr-6 font-semibold text-emerald-700">
                         {r.referralCount}
                       </td>
-                      <td className="py-4 text-slate-600">
+                      <td className="py-4 text-slate-600 whitespace-nowrap">
                         {new Date(r.joinedAt).toLocaleDateString()}
                       </td>
                     </tr>

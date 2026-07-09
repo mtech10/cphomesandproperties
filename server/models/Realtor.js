@@ -1,27 +1,17 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
+import Counter from "./Counter.js";
 
 const realtorSchema = new mongoose.Schema(
   {
-    fullName: {
+    // Sequential, human-readable partner ID: CPHP-00001, CPHP-00002 ...
+    // Generated automatically in the pre-save hook below, never set manually.
+    realtorId: {
       type: String,
-      required: [true, "Full name is required"],
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: [true, "Email is required"],
       unique: true,
-      lowercase: true,
-      trim: true,
+      index: true,
     },
-    phone: {
-      type: String,
-      required: [true, "Phone number is required"],
-      trim: true,
-    },
-    // This becomes the endpoint of the realtor's personal referral link,
-    // e.g. https://yourdomain.com/register/USERNAME
+    firstName: { type: String, required: true, trim: true },
+    lastName: { type: String, required: true, trim: true },
     username: {
       type: String,
       required: [true, "Username is required"],
@@ -33,13 +23,23 @@ const realtorSchema = new mongoose.Schema(
         "Username can only contain letters, numbers, dots, dashes and underscores (3-30 characters)",
       ],
     },
-    password: {
+    mobileNumber: { type: String, required: true, trim: true },
+    email: {
       type: String,
-      required: [true, "Password is required"],
-      minlength: 6,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
-    // If this realtor signed up through someone else's referral link,
-    // this points at that person's Realtor document.
+    dateOfBirth: { type: Date, required: true },
+    gender: { type: String, enum: ["Male", "Female"], required: true },
+    city: { type: String, required: true, trim: true },
+    address: { type: String, required: true, trim: true },
+    country: { type: String, required: true, trim: true, default: "Nigeria" },
+    state: { type: String, required: true, trim: true },
+    accountName: { type: String, required: true, trim: true },
+    accountNumber: { type: String, required: true, trim: true },
+    bankName: { type: String, required: true, trim: true },
     referredBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Realtor",
@@ -49,22 +49,28 @@ const realtorSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+// Runs once, automatically, the first time a new realtor document is saved.
+// Atomically increments the shared counter so no two realtors can ever be
+// handed the same ID, even if two people register at the exact same moment.
 realtorSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
+  if (!this.isNew || this.realtorId) return next();
 
-realtorSchema.methods.comparePassword = async function (candidate) {
-  return bcrypt.compare(candidate, this.password);
-};
+  try {
+    const counter = await Counter.findByIdAndUpdate(
+      "realtorId",
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true },
+    );
 
-realtorSchema.set("toJSON", {
-  transform: (_doc, ret) => {
-    delete ret.password;
-    return ret;
-  },
+    if (counter.seq > 10000) {
+      return next(new Error("Registration limit of 10,000 partners reached."));
+    }
+
+    this.realtorId = `CPHP-${String(counter.seq).padStart(5, "0")}`;
+    next();
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default mongoose.model("Realtor", realtorSchema);

@@ -4,13 +4,55 @@ import api from "../api.js";
 
 const USERNAME_PATTERN = /^[a-z0-9._-]{3,30}$/;
 
+const NIGERIAN_BANKS = [
+  "Access Bank",
+  "Citibank Nigeria",
+  "Ecobank Nigeria",
+  "Fidelity Bank",
+  "First Bank of Nigeria",
+  "First City Monument Bank (FCMB)",
+  "Globus Bank",
+  "Guaranty Trust Bank (GTBank)",
+  "Heritage Bank",
+  "Keystone Bank",
+  "Polaris Bank",
+  "Providus Bank",
+  "Stanbic IBTC Bank",
+  "Standard Chartered Bank",
+  "Sterling Bank",
+  "SunTrust Bank",
+  "Titan Trust Bank",
+  "Union Bank of Nigeria",
+  "United Bank for Africa (UBA)",
+  "Unity Bank",
+  "Wema Bank",
+  "Zenith Bank",
+  "Kuda Bank",
+  "Moniepoint MFB",
+  "OPay",
+  "PalmPay",
+  "VFD Microfinance Bank",
+  "Carbon",
+  "Rubies Bank",
+  "Sparkle Bank",
+];
+
 const initialForm = {
-  fullName: "",
-  email: "",
-  phone: "",
+  firstName: "",
+  lastName: "",
   username: "",
-  password: "",
-  confirmPassword: "",
+  mobileNumber: "",
+  email: "",
+  confirmEmail: "",
+  dateOfBirth: "",
+  gender: "",
+  city: "",
+  address: "",
+  country: "Nigeria",
+  state: "",
+  accountName: "",
+  accountNumber: "",
+  bankName: "",
 };
 
 function RegisterPage({ embedded } = { embedded: false }) {
@@ -55,18 +97,29 @@ function RegisterPage({ embedded } = { embedded: false }) {
 
   const validate = () => {
     const next = {};
-    if (!form.fullName.trim()) next.fullName = "Enter your full name.";
-    if (!/^\S+@\S+\.\S+$/.test(form.email))
-      next.email = "Enter a valid email address.";
-    if (!form.phone.trim()) next.phone = "Enter a phone number.";
+    if (!form.firstName.trim()) next.firstName = "Enter your first name.";
+    if (!form.lastName.trim()) next.lastName = "Enter your last name.";
     if (!USERNAME_PATTERN.test(form.username.trim().toLowerCase())) {
       next.username =
         "3-30 characters: letters, numbers, dots, dashes or underscores only.";
     }
-    if (form.password.length < 6)
-      next.password = "Password must be at least 6 characters.";
-    if (form.password !== form.confirmPassword)
-      next.confirmPassword = "Passwords do not match.";
+    if (!form.mobileNumber.trim()) next.mobileNumber = "Enter a mobile number.";
+    if (!/^\S+@\S+\.\S+$/.test(form.email))
+      next.email = "Enter a valid email address.";
+    if (
+      form.email.trim().toLowerCase() !== form.confirmEmail.trim().toLowerCase()
+    )
+      next.confirmEmail = "Email addresses do not match.";
+    if (!form.dateOfBirth) next.dateOfBirth = "Enter your date of birth.";
+    if (!form.gender) next.gender = "Select a gender.";
+    if (!form.city.trim()) next.city = "Enter your city.";
+    if (!form.address.trim()) next.address = "Enter your address.";
+    if (!form.country.trim()) next.country = "Enter your country.";
+    if (!form.state.trim()) next.state = "Enter your state.";
+    if (!form.accountName.trim()) next.accountName = "Enter the account name.";
+    if (!form.accountNumber.trim())
+      next.accountNumber = "Enter the account number.";
+    if (!form.bankName) next.bankName = "Select a bank.";
     setErrors(next);
     return Object.keys(next).length === 0;
   };
@@ -79,11 +132,20 @@ function RegisterPage({ embedded } = { embedded: false }) {
     setSubmitting(true);
     try {
       const res = await api.post("/realtors/register", {
-        fullName: form.fullName.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
         username: form.username.trim().toLowerCase(),
-        password: form.password,
+        mobileNumber: form.mobileNumber.trim(),
+        email: form.email.trim(),
+        dateOfBirth: form.dateOfBirth,
+        gender: form.gender,
+        city: form.city.trim(),
+        address: form.address.trim(),
+        country: form.country.trim(),
+        state: form.state.trim(),
+        accountName: form.accountName.trim(),
+        accountNumber: form.accountNumber.trim(),
+        bankName: form.bankName,
         referralUsername: referralUsername || null,
       });
 
@@ -97,6 +159,11 @@ function RegisterPage({ embedded } = { embedded: false }) {
       setSubmitting(false);
     }
   };
+
+  const inputClass =
+    "mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10";
+  const labelClass = "block text-sm font-medium text-slate-700";
+  const errorClass = "mt-2 text-sm text-rose-600";
 
   return (
     <div className={embedded ? "" : "page max-w-3xl "}>
@@ -125,75 +192,45 @@ function RegisterPage({ embedded } = { embedded: false }) {
       </section>
 
       <form className="card space-y-5 p-8" onSubmit={handleSubmit} noValidate>
+        {/* Name */}
         <div className="grid gap-5 lg:grid-cols-2">
           <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="fullName"
-            >
-              Full name
+            <label className={labelClass} htmlFor="firstName">
+              First name
             </label>
             <input
-              id="fullName"
-              name="fullName"
-              value={form.fullName}
+              id="firstName"
+              name="firstName"
+              value={form.firstName}
               onChange={handleChange}
-              placeholder="Jane Doe"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
+              placeholder="Jane"
+              className={inputClass}
             />
-            {errors.fullName && (
-              <p className="mt-2 text-sm text-rose-600">{errors.fullName}</p>
+            {errors.firstName && (
+              <p className={errorClass}>{errors.firstName}</p>
             )}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="email"
-            >
-              Email address
+            <label className={labelClass} htmlFor="lastName">
+              Last name
             </label>
             <input
-              id="email"
-              name="email"
-              type="email"
-              value={form.email}
+              id="lastName"
+              name="lastName"
+              value={form.lastName}
               onChange={handleChange}
-              placeholder="jane@example.com"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
+              placeholder="Doe"
+              className={inputClass}
             />
-            {errors.email && (
-              <p className="mt-2 text-sm text-rose-600">{errors.email}</p>
-            )}
+            {errors.lastName && <p className={errorClass}>{errors.lastName}</p>}
           </div>
         </div>
 
+        {/* Username / Mobile */}
         <div className="grid gap-5 lg:grid-cols-2">
           <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="phone"
-            >
-              Phone number
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="+234 800 000 0000"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
-            />
-            {errors.phone && (
-              <p className="mt-2 text-sm text-rose-600">{errors.phone}</p>
-            )}
-          </div>
-
-          <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="username"
-            >
+            <label className={labelClass} htmlFor="username">
               Choose a username
             </label>
             <input
@@ -203,59 +240,228 @@ function RegisterPage({ embedded } = { embedded: false }) {
               onChange={handleChange}
               placeholder="janedoe"
               autoComplete="off"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
+              className={inputClass}
             />
+            {errors.username && <p className={errorClass}>{errors.username}</p>}
+          </div>
 
-            {errors.username && (
-              <p className="mt-2 text-sm text-rose-600">{errors.username}</p>
+          <div>
+            <label className={labelClass} htmlFor="mobileNumber">
+              Mobile number
+            </label>
+            <input
+              id="mobileNumber"
+              name="mobileNumber"
+              value={form.mobileNumber}
+              onChange={handleChange}
+              placeholder="080 0000 0000"
+              className={inputClass}
+            />
+            {errors.mobileNumber && (
+              <p className={errorClass}>{errors.mobileNumber}</p>
             )}
           </div>
         </div>
 
+        {/* Email / Confirm email */}
         <div className="grid gap-5 lg:grid-cols-2">
           <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="password"
-            >
-              Password
+            <label className={labelClass} htmlFor="email">
+              Email address
             </label>
             <input
-              id="password"
-              name="password"
-              type="password"
-              value={form.password}
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
               onChange={handleChange}
-              placeholder="At least 6 characters"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
+              placeholder="jane@example.com"
+              className={inputClass}
             />
-            {errors.password && (
-              <p className="mt-2 text-sm text-rose-600">{errors.password}</p>
+            {errors.email && <p className={errorClass}>{errors.email}</p>}
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="confirmEmail">
+              Confirm email address
+            </label>
+            <input
+              id="confirmEmail"
+              name="confirmEmail"
+              type="email"
+              value={form.confirmEmail}
+              onChange={handleChange}
+              placeholder="Re-enter your email"
+              className={inputClass}
+            />
+            {errors.confirmEmail && (
+              <p className={errorClass}>{errors.confirmEmail}</p>
+            )}
+          </div>
+        </div>
+
+        {/* DOB / Gender */}
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="dateOfBirth">
+              Date of birth
+            </label>
+            <input
+              id="dateOfBirth"
+              name="dateOfBirth"
+              type="date"
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            {errors.dateOfBirth && (
+              <p className={errorClass}>{errors.dateOfBirth}</p>
             )}
           </div>
 
           <div>
-            <label
-              className="block text-sm font-medium text-slate-700"
-              htmlFor="confirmPassword"
+            <label className={labelClass} htmlFor="gender">
+              Gender
+            </label>
+            <select
+              id="gender"
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className={inputClass}
             >
-              Confirm password
+              <option value="">Select gender</option>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+            </select>
+            {errors.gender && <p className={errorClass}>{errors.gender}</p>}
+          </div>
+        </div>
+
+        {/* City / State */}
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="city">
+              City
             </label>
             <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={form.confirmPassword}
+              id="city"
+              name="city"
+              value={form.city}
               onChange={handleChange}
-              placeholder="Re-enter your password"
-              className="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 outline-none focus:border-emerald-700 focus:ring-4 focus:ring-emerald-700/10"
+              placeholder="Ikeja"
+              className={inputClass}
             />
-            {errors.confirmPassword && (
-              <p className="mt-2 text-sm text-rose-600">
-                {errors.confirmPassword}
-              </p>
+            {errors.city && <p className={errorClass}>{errors.city}</p>}
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="state">
+              State
+            </label>
+            <input
+              id="state"
+              name="state"
+              value={form.state}
+              onChange={handleChange}
+              placeholder="Lagos"
+              className={inputClass}
+            />
+            {errors.state && <p className={errorClass}>{errors.state}</p>}
+          </div>
+        </div>
+
+        {/* Country / Address */}
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="country">
+              Country
+            </label>
+            <input
+              id="country"
+              name="country"
+              value={form.country}
+              onChange={handleChange}
+              placeholder="Nigeria"
+              className={inputClass}
+            />
+            {errors.country && <p className={errorClass}>{errors.country}</p>}
+          </div>
+
+          <div>
+            <label className={labelClass} htmlFor="address">
+              Address
+            </label>
+            <input
+              id="address"
+              name="address"
+              value={form.address}
+              onChange={handleChange}
+              placeholder="12 Allen Avenue"
+              className={inputClass}
+            />
+            {errors.address && <p className={errorClass}>{errors.address}</p>}
+          </div>
+        </div>
+
+        {/* Account name / number */}
+        <div className="grid gap-5 lg:grid-cols-2">
+          <div>
+            <label className={labelClass} htmlFor="accountName">
+              Account name
+            </label>
+            <input
+              id="accountName"
+              name="accountName"
+              value={form.accountName}
+              onChange={handleChange}
+              placeholder="Jane Doe"
+              className={inputClass}
+            />
+            {errors.accountName && (
+              <p className={errorClass}>{errors.accountName}</p>
             )}
           </div>
+
+          <div>
+            <label className={labelClass} htmlFor="accountNumber">
+              Account number
+            </label>
+            <input
+              id="accountNumber"
+              name="accountNumber"
+              value={form.accountNumber}
+              onChange={handleChange}
+              placeholder="0123456789"
+              inputMode="numeric"
+              className={inputClass}
+            />
+            {errors.accountNumber && (
+              <p className={errorClass}>{errors.accountNumber}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Bank */}
+        <div>
+          <label className={labelClass} htmlFor="bankName">
+            Bank
+          </label>
+          <select
+            id="bankName"
+            name="bankName"
+            value={form.bankName}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="">Select bank</option>
+            {NIGERIAN_BANKS.map((bank) => (
+              <option key={bank} value={bank}>
+                {bank}
+              </option>
+            ))}
+          </select>
+          {errors.bankName && <p className={errorClass}>{errors.bankName}</p>}
         </div>
 
         {submitError && (

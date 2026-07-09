@@ -29,7 +29,7 @@ function SuccessPage() {
         <div className="mb-4">
           <p className="eyebrow mb-4">Welcome aboard</p>
           <h1 className="text-2xl font-semibold mb-3">
-            You're in, {realtor.fullName.split(" ")[0]}.
+            You're in, {realtor.firstName}
           </h1>
           <p>
             Your partner account has been created{" "}
@@ -41,19 +41,24 @@ function SuccessPage() {
             ) : (
               "as a direct sign-up."
             )}{" "}
-            Here is your personal link — share it to track referrals.
+            Here is your personal ID and link (share it to track referrals).
           </p>
         </div>
 
         <div className="rounded-[28px] bg-linear-to-r from-emerald-700 to-emerald-900 p-5 text-white shadow-2xl mb-6">
-          <div className="text-xs uppercase tracking-[0.36em] text-emerald-100/80">
-            Your personal referral link
+          <div className="mt-4 text-sm text-white">
+            Your Partner ID:{" "}
+            <strong className="text-white">{realtor.realtorId}</strong>
           </div>
-          <div className="mt-3 wrap-break-word text-sm font-semibold leading-7">
-            {personalLink}
+          <div className="text-xs text-emerald-100/80">
+            Your personal referral link:{" "}
+            <strong className="mt-3 wrap-break-word text-sm font-semibold leading-7">
+              {personalLink}
+            </strong>
           </div>
           <button
             className="mt-5 rounded-2xl bg-white px-5 py-3 text-sm font-semibold text-emerald-700 transition hover:bg-slate-100"
+            cursor-pointer
             onClick={handleCopy}
           >
             {copied ? "Copied ✓" : "Copy link"}
