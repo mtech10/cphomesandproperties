@@ -15,7 +15,7 @@ const app = express();
 // URL) as a comma-separated list in ALLOWED_ORIGINS if you ever need to.
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://cphomesandproperties.onrender.com",
+  "https://cphomesandproperties-frontend.onrender.com",
   ...(process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
     : []),
